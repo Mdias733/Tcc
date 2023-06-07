@@ -41,8 +41,8 @@ void leituraRfid() {
   }
   strID.toUpperCase();
 
-  // Verifica se o ID do cartão lido corresponde ao ID especificado
-  if (strID == "17:F3:0A:4F") {
+  // Verifica se o ID do cartão lido corresponde a um dos IDs especificados
+  if (strID == "17:F3:0A:4F" || strID == "A7:B3:20:34") {
     digitalWrite(pinoLedVerde, HIGH); // Acende o LED verde
     delay(3000); // Aguarda 3 segundos
     digitalWrite(pinoLedVerde, LOW); // Desliga o LED verde
