@@ -9,6 +9,10 @@ MFRC522 rfid(SS_PIN, RST_PIN);
 
 const int pinoLedVerde = 3;
 const int pinoLedVermelho = 2;
+const int pinoBuzzer = 5; // Altere o pino do buzzer para um pino que suporte saída de sinal PWM
+const int pinoLedExtra = 4;
+
+bool ledExtraLigado = false;
 
 void setup() {
   Wire.begin();
@@ -17,9 +21,14 @@ void setup() {
 
   pinMode(pinoLedVerde, OUTPUT);
   pinMode(pinoLedVermelho, OUTPUT);
+  pinMode(pinoBuzzer, OUTPUT);
+  pinMode(pinoLedExtra, OUTPUT);
 
   digitalWrite(pinoLedVerde, LOW);
   digitalWrite(pinoLedVermelho, LOW);
+  digitalWrite(pinoBuzzer, LOW);
+  digitalWrite(pinoLedExtra, HIGH); // Liga o LED extra inicialmente
+  ledExtraLigado = true;
 }
 
 void loop() {
@@ -42,17 +51,37 @@ void leituraRfid() {
   strID.toUpperCase();
 
   // Verifica se o ID do cartão lido corresponde a um dos IDs especificados
-  if (strID == "17:F3:0A:4F" || strID == "A7:B3:20:34") {
+  if (strID == "17:F3:0A:4F" || strID == "A7:B3:20:34"|| strID == "37:32:1E:F3") {
     digitalWrite(pinoLedVerde, HIGH); // Acende o LED verde
+    desligarLedExtra(); // Desliga o LED extra
+    tone(pinoBuzzer, 1000, 200); // Reproduz som de acesso liberado (1000 Hz por 200 ms)
     delay(3000); // Aguarda 3 segundos
     digitalWrite(pinoLedVerde, LOW); // Desliga o LED verde
+    noTone(pinoBuzzer); // Para de reproduzir o som
+    ligarLedExtra(); // Liga o LED extra novamente
   }
   else {
     digitalWrite(pinoLedVermelho, HIGH); // Acende o LED vermelho
+    desligarLedExtra(); // Desliga o LED extra
+    tone(pinoBuzzer, 500, 200); // Reproduz som de acesso negado (500 Hz por 200 ms)
     delay(3000); // Aguarda 3 segundos
     digitalWrite(pinoLedVermelho, LOW); // Desliga o LED vermelho
+    noTone(pinoBuzzer); // Para de reproduzir o som
+    ligarLedExtra(); // Liga o LED extra novamente
   }
 
   rfid.PICC_HaltA(); // Para a leitura do cartão
   rfid.PCD_StopCrypto1(); // Para a criptografia no PCD
+}
+
+// Função para ligar o LED extra
+void ligarLedExtra() {
+  digitalWrite(pinoLedExtra, HIGH);
+  ledExtraLigado = true;
+}
+
+// Função para desligar o LED extra
+void desligarLedExtra() {
+  digitalWrite(pinoLedExtra, LOW);
+  ledExtraLigado = false;
 }
