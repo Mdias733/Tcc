@@ -21,6 +21,7 @@ CREATE TABLE tb_funcionarios (
   cpf_funcionario VARCHAR(30) not null,
   rg_funcionario VARCHAR(30) not null,
   genero_funcionario varchar (20) not null,
+  tagCartao_funcionario VARCHAR(30) not null,
   email_funcionario VARCHAR(100) NOT NULL,
   telefone_funcionario VARCHAR(20) NOT NULL,
   data_funcionario TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
